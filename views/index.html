@@ -1,0 +1,43 @@
+{{ block "index" . }}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script
+			src="https://unpkg.com/htmx.org@1.9.9"
+			integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+			crossorigin="anonymous"
+		></script>
+		<title>HTMX Form Document</title>
+	</head>
+	<body class="bg-gray-100">
+		<div class="max-w-lg lg:ms-auto mx-auto text-center">
+			<div class="py-16 px-7 rounded-md bg-white">
+				{{ template "contact-form" .Form }} 
+				<hr class="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700">
+				<div class="w-full flex">
+					{{ template "display" .Data }}
+				</div>
+			</div>
+		</div>
+		<script>
+			document.addEventListener("DOMContentLoaded", (event) => {
+				document.body.addEventListener('htmx:beforeSwap', function(evt) {
+					if (evt.detail.xhr.status === 422) {
+						// allow 422 responses to swap as we are using this as a signal that
+						// a form was submitted with bad data and want to rerender with the
+						// errors
+						//
+						// set isError to false to avoid error logging in console
+						evt.detail.shouldSwap = true;
+						evt.detail.isError = false;
+					}
+				});
+			})
+		</script>
+	</body>
+</html>
+{{ end }} 
